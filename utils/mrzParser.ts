@@ -204,15 +204,17 @@ const parseTD3 = (lines: string[], autoFix: boolean): MrzResult => {
     const detailedType = getDetailedType(iss, typeCode, 'TD3', docNum);
 
     const result: MrzResult = {
-        valid: vDoc && vDob && vExp && vFinal, format: typeCode.startsWith('V') ? 'MRV_A' : 'TD3', type: typeCode.startsWith('V') ? 'VISA' : 'PASSPORT',
+        // FIXED: Added vOpt to the validation chain.
+        valid: vDoc && vDob && vExp && vOpt && vFinal, 
+        format: typeCode.startsWith('V') ? 'MRV_A' : 'TD3', type: typeCode.startsWith('V') ? 'VISA' : 'PASSPORT',
         rawLines: [l1, l2],
         fields: {
             documentNumber: docNum, documentNumberCheck: docNumC, 
-            nationality: normalizeCountry(nat), // Normalize
+            nationality: normalizeCountry(nat), 
             birthDate: dob, birthDateCheck: dobC, sex,
             expiryDate: exp, expiryDateCheck: expC, optionalData: opt, optionalDataCheck: optC,
             documentTypeRaw: typeCode, detailedType, 
-            issuingState: normalizeCountry(iss), // Normalize
+            issuingState: normalizeCountry(iss),
             surname: cleanName(sur), givenNames: cleanName(given || ''),
             compositeCheck: finalC
         },
